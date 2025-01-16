@@ -3,4 +3,3 @@ numpy
 streamlit
 scikit-learn
 nltk
-FreqDist
