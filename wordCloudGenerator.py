@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import deque
 from PIL import ImageDraw, ImageFont, Image
+import os
 
 # Set up session state to keep track of wordclouds if not already done
 if 'wordcloud_history' not in st.session_state:
@@ -12,7 +13,7 @@ if 'wordcloud_history' not in st.session_state:
 
 # Title
 st.title("Ankit's WordCloud App")
-st.header("Create a streamlit app that takes pdf file as an input, extracts text, preprocess text, removes stop words and build a wordcloud of 500 words. Let the user change the colormap parameter from a dropdown with all available colormap options. Remove the axis of the graph. Keep a history of all generated wordclouds in a separate pane for the user to use till session lasts")
+st.header("App that takes pdf file as an input, extracts text, preprocess text, removes stop words and build a wordcloud")
 
 # Sidebar for user inputs
 st.sidebar.header("WordCloud Configuration")
@@ -39,9 +40,16 @@ def extract_text_from_pdf(file):
         text += page.extract_text() or ""
     return text
 
+def get_default_font():
+    """Fetch a default truetype font that works across platforms."""
+    try:
+        return ImageFont.truetype("arial.ttf", 20)
+    except IOError:
+        return ImageFont.load_default()
+
 def add_watermark(wordcloud_image, text):
     """Add watermark text to a PIL image at the bottom right."""
-    watermark_font = ImageFont.truetype("arial.ttf", 20)  # Updated to use a truetype font
+    watermark_font = get_default_font()
     image = wordcloud_image.convert("RGBA")
     watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
