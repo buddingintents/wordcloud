@@ -3,3 +3,7 @@ numpy
 streamlit
 scikit-learn
 nltk
+wordcloud 
+PyPDF2 
+matplotlib 
+seaborn
