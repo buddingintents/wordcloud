@@ -41,13 +41,13 @@ def extract_text_from_pdf(file):
 
 def add_watermark(wordcloud_image, text):
     """Add watermark text to a PIL image at the bottom right."""
-    watermark_font = ImageFont.load_default()
+    watermark_font = ImageFont.truetype("arial.ttf", 20)  # Updated to use a truetype font
     image = wordcloud_image.convert("RGBA")
     watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
     text_width, text_height = draw.textsize(text, font=watermark_font)
     position = (image.width - text_width - 10, image.height - text_height - 10)
-    draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 128))
+    draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 255))
     combined = Image.alpha_composite(image, watermark)
     return combined.convert("RGB")
 
