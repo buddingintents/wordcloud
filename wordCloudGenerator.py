@@ -50,7 +50,7 @@ def get_default_font():
 def add_watermark(wordcloud_image, text):
     """Add watermark text to a PIL image at the bottom right with a dark grey background."""
     # Get the default font or load a specific one if necessary
-    watermark_font = ImageFont.truetype("arialbd.ttf", 30)  # Using Arial Bold
+    watermark_font = get_default_font()  # Using Deafult Font
     image = wordcloud_image.convert("RGBA")
     # Create a new RGBA image for the watermark with transparency
     watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
