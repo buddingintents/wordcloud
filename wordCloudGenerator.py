@@ -19,6 +19,12 @@ st.sidebar.header("WordCloud Configuration")
 colormap_options = sorted(plt.colormaps())
 colormap = st.sidebar.selectbox("Select colormap", colormap_options, index=colormap_options.index("viridis"))
 
+# Max words slider
+max_words = st.sidebar.slider("Select max words", min_value=400, max_value=800, value=500)
+
+# Background color picker
+background_color = st.sidebar.color_picker("Select background color", "#ffffff")
+
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
 
@@ -43,7 +49,7 @@ if uploaded_file is not None:
         processed_text = " ".join(filtered_words)
 
         # Generate wordcloud
-        wordcloud = WordCloud(width=800, height=400, max_words=500, colormap=colormap, stopwords=stopwords).generate(processed_text)
+        wordcloud = WordCloud(width=800, height=400, max_words=max_words, colormap=colormap, background_color=background_color, stopwords=stopwords).generate(processed_text)
 
         # Display wordcloud
         fig, ax = plt.subplots()
