@@ -10,7 +10,7 @@ if 'wordcloud_history' not in st.session_state:
     st.session_state['wordcloud_history'] = deque(maxlen=10)  # Keep up to 10 wordclouds
 
 # Title
-st.title("Ankit's Stock Price Watcher App")
+st.title("Ankit's WordCloud App")
 st.header("Create a streamlit app that takes pdf file as an input, extracts text, preprocess text, removes stop words and build a wordcloud of 500 words. Let the user change the colormap parameter from a dropdown with all available colormap options. Remove the axis of the graph. Keep a history of all generated wordclouds in a separate pane for the user to use till session lasts")
 
 
