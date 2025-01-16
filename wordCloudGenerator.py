@@ -10,9 +10,7 @@ if 'wordcloud_history' not in st.session_state:
     st.session_state['wordcloud_history'] = deque(maxlen=10)  # Keep up to 10 wordclouds
 
 # Title
-st.title("Ankit's WordCloud App")
-st.header("Create a streamlit app that takes pdf file as an input, extracts text, preprocess text, removes stop words and build a wordcloud of 500 words. Let the user change the colormap parameter from a dropdown with all available colormap options. Remove the axis of the graph. Keep a history of all generated wordclouds in a separate pane for the user to use till session lasts")
-
+st.title("PDF WordCloud Generator")
 
 # Sidebar for user inputs
 st.sidebar.header("WordCloud Configuration")
@@ -24,6 +22,9 @@ max_words = st.sidebar.slider("Select max words", min_value=400, max_value=800, 
 
 # Background color picker
 background_color = st.sidebar.color_picker("Select background color", "#ffffff")
+
+# Secret text input
+secret_text = st.sidebar.text_input("Optional Secret Text", "")
 
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
@@ -55,6 +56,11 @@ if uploaded_file is not None:
         fig, ax = plt.subplots()
         ax.imshow(wordcloud, interpolation="bilinear")
         ax.axis("off")  # Remove axis
+
+        # Add watermark if secret_text is incorrect
+        if secret_text != "Ankit@Sharma":
+            plt.text(0.95, 0.01, "Generated @ Ankit's WordCloud", fontsize=10, color='gray', ha='right', transform=plt.gcf().transFigure)
+
         st.pyplot(fig)
 
         # Store wordcloud history
