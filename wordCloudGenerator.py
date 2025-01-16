@@ -53,7 +53,7 @@ def add_watermark(wordcloud_image, text):
     image = wordcloud_image.convert("RGBA")
     watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
-    text_width, text_height = draw.textsize(text, font=watermark_font)
+    text_width, text_height = draw.textbbox((0, 0), text, font=watermark_font)[2:]  # Use textbbox for text sizing
     position = (image.width - text_width - 10, image.height - text_height - 10)
     draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 255))
     combined = Image.alpha_composite(image, watermark)
