@@ -4,13 +4,15 @@ from PyPDF2 import PdfReader
 import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import deque
+from PIL import ImageDraw, ImageFont, Image
 
 # Set up session state to keep track of wordclouds if not already done
 if 'wordcloud_history' not in st.session_state:
     st.session_state['wordcloud_history'] = deque(maxlen=10)  # Keep up to 10 wordclouds
 
 # Title
-st.title("PDF WordCloud Generator")
+st.title("Ankit's WordCloud App")
+st.header("Create a streamlit app that takes pdf file as an input, extracts text, preprocess text, removes stop words and build a wordcloud of 500 words. Let the user change the colormap parameter from a dropdown with all available colormap options. Remove the axis of the graph. Keep a history of all generated wordclouds in a separate pane for the user to use till session lasts")
 
 # Sidebar for user inputs
 st.sidebar.header("WordCloud Configuration")
@@ -37,6 +39,18 @@ def extract_text_from_pdf(file):
         text += page.extract_text() or ""
     return text
 
+def add_watermark(wordcloud_image, text):
+    """Add watermark text to a PIL image at the bottom right."""
+    watermark_font = ImageFont.load_default()
+    image = wordcloud_image.convert("RGBA")
+    watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
+    draw = ImageDraw.Draw(watermark)
+    text_width, text_height = draw.textsize(text, font=watermark_font)
+    position = (image.width - text_width - 10, image.height - text_height - 10)
+    draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 128))
+    combined = Image.alpha_composite(image, watermark)
+    return combined.convert("RGB")
+
 # Process uploaded PDF
 if uploaded_file is not None:
     st.subheader("Processing...")
@@ -52,25 +66,24 @@ if uploaded_file is not None:
         # Generate wordcloud
         wordcloud = WordCloud(width=800, height=400, max_words=max_words, colormap=colormap, background_color=background_color, stopwords=stopwords).generate(processed_text)
 
-        # Display wordcloud
-        fig, ax = plt.subplots()
-        ax.imshow(wordcloud, interpolation="bilinear")
-        ax.axis("off")  # Remove axis
+        # Convert wordcloud to image for watermarking
+        wordcloud_image = wordcloud.to_image()
 
         # Add watermark if secret_text is incorrect
         if secret_text != "Ankit@Sharma":
-            plt.text(0.95, 0.01, "Generated @ Ankit's WordCloud", fontsize=10, color='gray', ha='right', transform=plt.gcf().transFigure)
+            wordcloud_image = add_watermark(wordcloud_image, "Generated @ Ankit's WordCloud")
 
-        st.pyplot(fig)
+        # Display wordcloud
+        st.image(wordcloud_image)
 
         # Store wordcloud history
-        st.session_state.wordcloud_history.append((colormap, fig))
+        st.session_state.wordcloud_history.append((colormap, wordcloud_image))
 
         # Display history pane
         st.subheader("WordCloud History")
-        for cmap, wc_fig in st.session_state.wordcloud_history:
+        for cmap, wc_img in st.session_state.wordcloud_history:
             st.write(f"Colormap: {cmap}")
-            st.pyplot(wc_fig)
+            st.image(wc_img)
     else:
         st.error("Unable to extract text from the uploaded PDF.")
 else:
