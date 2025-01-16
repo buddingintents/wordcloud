@@ -48,14 +48,24 @@ def get_default_font():
         return ImageFont.load_default()
 
 def add_watermark(wordcloud_image, text):
-    """Add watermark text to a PIL image at the bottom right."""
-    watermark_font = get_default_font()
+    """Add watermark text to a PIL image at the bottom right with a dark grey background."""
+    # Get the default font or load a specific one if necessary
+    watermark_font = ImageFont.truetype("arialbd.ttf", 30)  # Using Arial Bold
     image = wordcloud_image.convert("RGBA")
+    # Create a new RGBA image for the watermark with transparency
     watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
-    text_width, text_height = draw.textbbox((0, 0), text, font=watermark_font)[2:]  # Use textbbox for text sizing
+    # Calculate text size
+    text_width, text_height = draw.textbbox((0, 0), text, font=watermark_font)[2:]
+    # Position of watermark text in bottom-right corner
     position = (image.width - text_width - 10, image.height - text_height - 10)
-    draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 255))
+    # Draw a dark grey rectangle as the background of the watermark text
+    padding = 10  # Padding around the text for the background
+    rectangle_position = (position[0] - padding, position[1] - padding, position[0] + text_width + padding, position[1] + text_height + padding)
+    draw.rectangle(rectangle_position, fill=(40, 40, 40, 200))  # Dark grey with some transparency
+    # Draw the watermark text in bold white color
+    draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 255))  # White bold text
+    # Combine the watermark with the original image
     combined = Image.alpha_composite(image, watermark)
     return combined.convert("RGB")
 
