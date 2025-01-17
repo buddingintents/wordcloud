@@ -104,7 +104,7 @@ def get_mask_from_logo(logo_url):
         if logo_url:
             response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
             response.raise_for_status()  # Raise an error for failed requests
-            logo_image = Image.open(BytesIO(response.content)).convert("1")
+            logo_image = Image.open(BytesIO(response.content)).convert("L")
             mask_array = np.array(logo_image)
             #mask_array = np.array(convert_white_to_transparent(logo_image))
             #mask_array = np.array(logo_image)
