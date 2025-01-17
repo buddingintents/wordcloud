@@ -4,7 +4,7 @@ from PyPDF2 import PdfReader
 import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import deque
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 import numpy as np
 import requests
 from io import BytesIO
@@ -100,8 +100,7 @@ def get_mask_from_logo(logo_url):
             response.raise_for_status()  # Raise an error for failed requests
             logo_image = Image.open(BytesIO(response.content)).convert("L")
             return np.array(logo_image)
-    from PIL import UnidentifiedImageError
-except (requests.RequestException, UnidentifiedImageError):
+    except (requests.RequestException, UnidentifiedImageError):
         st.warning("Failed to load or process the logo image. Defaulting to no mask.")
     return None
 
