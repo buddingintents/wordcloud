@@ -94,6 +94,11 @@ def convert_logo_to_black_and_white(image):
     binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
     return binary_image
     
+def convert_logo_to_greyscale(image):
+    """Convert a PIL image to a binary (black and white) image."""
+    grayscale_image = image.convert("L")  # Convert to grayscale
+    return grayscale_image
+    
 if selected_logo_url:
     try:
         # Fetch the logo image
@@ -103,6 +108,12 @@ if selected_logo_url:
         
         # Display the original logo
         st.sidebar.image(original_logo, caption="Original Logo", use_container_width=True)
+        
+        # Convert the logo to a binary mask
+        greyscale_logo = convert_logo_to_greyscale(original_logo)
+        
+        # Display the greyscale mask version
+        st.sidebar.image(greyscale_logo, caption="Greyscale Mask", use_container_width=True)
         
         # Convert the logo to a binary mask
         binary_logo = convert_logo_to_black_and_white(original_logo)
