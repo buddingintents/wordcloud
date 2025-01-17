@@ -103,10 +103,14 @@ def get_mask_from_logo(logo_url):
         if logo_url:
             response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
             response.raise_for_status()  # Raise an error for failed requests
-            logo_image = Image.open(BytesIO(response.content)).convert("L")
-             # Create a binary mask where black pixels are 1 and white pixels are 0
-            binary_mask = np.where(logo_image == 0, 1, 0)
-            return np.array(binary_mask)
+            logo_image = Image.open(BytesIO(response.content)).convert("1")
+            mask_array = np.array(logo_image)
+            # Check the shape of the mask
+            if len(mask_array.shape) != 2:
+                raise ValueError("Mask image must be a 2D array")
+            # Create a binary mask where black pixels are 1 and white pixels are 0
+            binary_mask = np.where(mask_array == 0, 1, 0)
+        return binary_mask
     except requests.RequestException as e:
         st.warning(f"Failed to load the logo image due to a network error: {e}. Defaulting to no mask.")
     except UnidentifiedImageError as e:
