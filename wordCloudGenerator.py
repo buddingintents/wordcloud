@@ -103,7 +103,7 @@ def get_mask_from_logo(logo_url):
         if logo_url:
             response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
             response.raise_for_status()  # Raise an error for failed requests
-            logo_image = Image.open(BytesIO(response.content)).convert("1")
+            logo_image = Image.open(BytesIO(response.content)).convert("L")
              # Create a binary mask where black pixels are 1 and white pixels are 0
             binary_mask = np.where(logo_image == 0, 1, 0)
             return np.array(binary_mask)
