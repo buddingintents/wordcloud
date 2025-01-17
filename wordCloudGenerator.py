@@ -179,7 +179,7 @@ def get_mask_from_logo(logo_url):
             #mask_array = np.array(logo_image)
             # Check the shape of the mask
             if len(mask_array.shape) != 2:
-                raise ValueError("Mask image must be a 2D array")
+                raise ValueError(len(mask_array.shape) + "Mask image must be a 2D array")
             # Create a binary mask where black pixels are 1 and white pixels are 0
             binary_mask = np.where(mask_array == 0, 1, 0)
         return binary_mask
