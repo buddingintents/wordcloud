@@ -167,12 +167,7 @@ def get_mask_from_logo(logo_url):
         if logo_url:
             response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
             response.raise_for_status()  # Raise an error for failed requests
-            logo_image = Image.open(BytesIO(response.content)).convert("L")
-            
-            # Check if the image has the expected number of channels
-            if logo_image.mode != "RGBA":
-                raise ValueError("Mask image must be in RGBA mode")
-                                
+            logo_image = Image.open(BytesIO(response.content))            
             binary_logo = convert_logo_to_black_and_white(logo_image)
             mask_array = np.array(binary_logo)
             #mask_array = np.array(convert_white_to_transparent(logo_image))
