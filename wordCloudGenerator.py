@@ -142,6 +142,12 @@ if selected_logo_url:
         # Display the binary mask version
         st.sidebar.image(binary_logo, caption="Binary Mask", use_container_width=True)
         
+        # Convert the logo to a binary mask without alpha
+        binary_logo_noalpha = convert_logo_to_black_and_white(original_logo).convert("L")
+        
+        # Display the binary mask without alpha version
+        st.sidebar.image(binary_logo_noalpha, caption="Binary Mask without alpha", use_container_width=True)
+        
     except Exception as e:
         st.sidebar.error(f"Error displaying logo: {e}")
 else:
