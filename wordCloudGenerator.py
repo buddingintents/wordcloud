@@ -96,9 +96,12 @@ def extract_text_from_pdf(file):
 
 def get_mask_from_logo(logo_url):
     """Generate a mask from a logo image URL."""
+    headers = {
+        'User-Agent': 'YourAppName/1.0 (your-email@example.com)'
+    }
     try:
         if logo_url:
-            response = requests.get(logo_url, stream=True, timeout=10)
+            response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
             response.raise_for_status()  # Raise an error for failed requests
             logo_image = Image.open(BytesIO(response.content)).convert("1")
             return np.array(logo_image)
