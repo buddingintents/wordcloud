@@ -238,11 +238,40 @@ if uploaded_file is not None:
         ).generate(processed_text)
 
         wordcloud_image = wordcloud.to_image()
+        
+        ##GIF CODE START
+
+        # Create a list to store frames
+        frames = []
+        
+        # Generate frames with animated text
+        for i in range(50):
+            frame = Image.new('RGB', (800, 400), 'white')
+            draw = ImageDraw.Draw(frame)
+            
+            for word in filtered_words:
+                position = (random.randint(0, 700), random.randint(0, 350))
+                size = random.randint(20, 50)
+                #font = ImageFont.truetype("arial.ttf", size)
+                draw.text(position, word, font=font, fill='black')
+            
+            frames.append(frame)
+
+        # Save the frames as a GIF
+        img_gif = frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=100, loop=0)
+
+        # Display the GIF
+        from IPython.display import Image as IPImage
+        IPImage(filename='animated_wordcloud.gif')
+
+        ##GIF CODE END       
 
         if secret_text != "Ankit@Sharma":
             wordcloud_image = add_watermark(wordcloud_image, "Generated @ Ankit's WordCloud")
 
         st.image(wordcloud_image)
+        
+        st.image(img_gif)
 
         global_wordcloud_count += 1
         save_wordcloud_count(global_wordcloud_count)
