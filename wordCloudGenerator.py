@@ -106,6 +106,7 @@ def get_mask_from_logo(logo_url):
             response.raise_for_status()  # Raise an error for failed requests
             logo_image = Image.open(BytesIO(response.content)).convert("1")
             mask_array = np.array(convert_white_to_transparent(logo_image))
+            #mask_array = np.array(logo_image)
             # Check the shape of the mask
             if len(mask_array.shape) != 2:
                 raise ValueError("Mask image must be a 2D array")
@@ -123,24 +124,14 @@ def get_mask_from_logo(logo_url):
     return None
     
 def convert_white_to_transparent(image):
-    # Get the data of the image
     data = image.getdata()
-    
-    # Create a new data list
     new_data = []
-    
     for item in data:
-        # Change all white (also shades of whites)
-        # pixels to transparent
         if item[:3] == (255, 255, 255):
-            new_data.append((255, 255, 255, 0))
+            new_data.append((0, 0, 0, 0))  # Black and fully transparent
         else:
-            new_data.append(item)
-    
-    # Update image data
+            new_data.append((0, 0, 0, 255))  # Black and opaque
     image.putdata(new_data)
-    
-    # return the image
     return image
 
 if uploaded_file is not None:
