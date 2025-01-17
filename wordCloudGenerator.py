@@ -86,6 +86,14 @@ selected_logo_url = company_logos[logo_selection]
 
 st.sidebar.subheader("Logo Preview")
 
+def convert_logo_to_black_and_white(image):
+    """Convert a PIL image to a binary (black and white) image."""
+    grayscale_image = image.convert("L")  # Convert to grayscale
+    # Apply thresholding to create binary black and white
+    threshold = 128  # Adjust the threshold as needed
+    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
+    return binary_image
+    
 if selected_logo_url:
     try:
         # Fetch the logo image
@@ -109,14 +117,6 @@ else:
 
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
-
-def convert_logo_to_black_and_white(image):
-    """Convert a PIL image to a binary (black and white) image."""
-    grayscale_image = image.convert("L")  # Convert to grayscale
-    # Apply thresholding to create binary black and white
-    threshold = 128  # Adjust the threshold as needed
-    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
-    return binary_image
     
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
