@@ -91,7 +91,7 @@ def convert_logo_to_black_and_white(image):
     grayscale_image = image.convert("L")  # Convert to grayscale
     # Apply thresholding to create binary black and white
     threshold = 128  # Adjust the threshold as needed
-    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
+    binary_image = grayscale_image.point(lambda p: 255 if p < threshold else 0, '1')
     return binary_image
     
 if selected_logo_url:
