@@ -105,7 +105,8 @@ def get_mask_from_logo(logo_url):
             response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
             response.raise_for_status()  # Raise an error for failed requests
             logo_image = Image.open(BytesIO(response.content)).convert("L")
-            mask_array = np.array(logo_image)
+            binary_logo = convert_logo_to_black_and_white(logo_image)
+            mask_array = np.array(binary_logo)
             #mask_array = np.array(convert_white_to_transparent(logo_image))
             #mask_array = np.array(logo_image)
             # Check the shape of the mask
@@ -134,6 +135,14 @@ def convert_white_to_transparent(image):
             new_data.append((0, 0, 0, 255))  # Black and opaque
     image.putdata(new_data)
     return image
+    
+def convert_logo_to_black_and_white(image):
+    """Convert a PIL image to a binary (black and white) image."""
+    grayscale_image = image.convert("L")  # Convert to grayscale
+    # Apply thresholding to create binary black and white
+    threshold = 128  # Change if needed for more contrast
+    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
+    return binary_image
 
 if uploaded_file is not None:
     processing_message = st.empty()
