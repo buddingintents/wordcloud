@@ -96,6 +96,7 @@ def extract_text_from_pdf(file):
 
 def get_mask_from_logo(logo_url):
     """Generate a mask from a logo image URL."""
+    binary_mask = None  # Initialize binary_mask to None
     headers = {
         'User-Agent': 'YourAppName/1.0 (your-email@example.com)'
     }
@@ -115,6 +116,10 @@ def get_mask_from_logo(logo_url):
         st.warning(f"Failed to load the logo image due to a network error: {e}. Defaulting to no mask.")
     except UnidentifiedImageError as e:
         st.warning(f"Failed to process the logo image: {e}. Defaulting to no mask.")
+    except ValueError as ve:
+        st.warning(f"ValueError: {ve}. Defaulting to no mask.")
+    except Exception as e:
+        st.warning(f"An unexpected error occurred: {e}. Defaulting to no mask.")
     return None
     
 def convert_white_to_transparent(image):
