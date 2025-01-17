@@ -100,7 +100,8 @@ def get_mask_from_logo(logo_url):
             response.raise_for_status()  # Raise an error for failed requests
             logo_image = Image.open(BytesIO(response.content)).convert("L")
             return np.array(logo_image)
-    except (requests.RequestException, UnidentifiedImageError):
+    from PIL import UnidentifiedImageError
+except (requests.RequestException, UnidentifiedImageError):
         st.warning("Failed to load or process the logo image. Defaulting to no mask.")
     return None
 
