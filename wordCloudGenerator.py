@@ -29,6 +29,28 @@ def save_wordcloud_count(count):
     with open(COUNT_FILE, "w") as file:
         file.write(str(count))
 
+def get_default_font():
+    """Fetch a default truetype font that works across platforms."""
+    try:
+        return ImageFont.truetype("arial.ttf", 20)
+    except IOError:
+        return ImageFont.load_default()
+
+def add_watermark(wordcloud_image, text):
+    """Add watermark text to a PIL image at the bottom right with a dark grey background."""
+    watermark_font = get_default_font()
+    image = wordcloud_image.convert("RGBA")
+    watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
+    draw = ImageDraw.Draw(watermark)
+    text_width, text_height = draw.textbbox((0, 0), text, font=watermark_font)[2:]
+    position = (image.width - text_width - 10, image.height - text_height - 10)
+    padding = 10
+    rectangle_position = (position[0] - padding, position[1] - padding, position[0] + text_width + padding, position[1] + text_height + padding)
+    draw.rectangle(rectangle_position, fill=(40, 40, 40, 200))
+    draw.text(position, text, font=watermark_font, fill=(255, 255, 255, 255))
+    combined = Image.alpha_composite(image, watermark)
+    return combined.convert("RGB")
+
 # Initialize global word cloud count
 global_wordcloud_count = load_wordcloud_count()
 
