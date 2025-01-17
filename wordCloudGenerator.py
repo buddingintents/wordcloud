@@ -7,6 +7,27 @@ from collections import deque
 from PIL import ImageDraw, ImageFont, Image
 import os
 
+# File path to store global word cloud count
+COUNT_FILE = "wordcloud_count.txt"
+
+def load_wordcloud_count():
+    """Load the global word cloud count from a file."""
+    if os.path.exists(COUNT_FILE):
+        with open(COUNT_FILE, "r") as file:
+            try:
+                return int(file.read().strip())
+            except ValueError:
+                return 0
+    return 0
+
+def save_wordcloud_count(count):
+    """Save the updated global word cloud count to a file."""
+    with open(COUNT_FILE, "w") as file:
+        file.write(str(count))
+
+# Initialize global word cloud count
+global_wordcloud_count = load_wordcloud_count()
+
 # Set up session state to keep track of wordclouds if not already done
 if 'wordcloud_history' not in st.session_state:
     st.session_state['wordcloud_history'] = deque(maxlen=10)  # Keep up to 10 wordclouds
@@ -50,7 +71,7 @@ def get_default_font():
 def add_watermark(wordcloud_image, text):
     """Add watermark text to a PIL image at the bottom right with a dark grey background."""
     # Get the default font or load a specific one if necessary
-    watermark_font = get_default_font()  # Using Deafult Font
+    watermark_font = get_default_font()  # Using Default Font
     image = wordcloud_image.convert("RGBA")
     # Create a new RGBA image for the watermark with transparency
     watermark = Image.new("RGBA", image.size, (255, 255, 255, 0))
@@ -93,6 +114,11 @@ if uploaded_file is not None:
 
         # Display wordcloud
         st.image(wordcloud_image)
+
+        # Increment and save global wordcloud count
+        global_wordcloud_count += 1
+        save_wordcloud_count(global_wordcloud_count)
+        st.write(f"Total WordClouds Generated: {global_wordcloud_count}")
 
         # Store wordcloud history
         st.session_state.wordcloud_history.append((colormap, wordcloud_image))
