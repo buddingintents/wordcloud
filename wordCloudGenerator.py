@@ -110,6 +110,14 @@ else:
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
 
+def convert_logo_to_black_and_white(image):
+    """Convert a PIL image to a binary (black and white) image."""
+    grayscale_image = image.convert("L")  # Convert to grayscale
+    # Apply thresholding to create binary black and white
+    threshold = 128  # Adjust the threshold as needed
+    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
+    return binary_image
+    
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     text = ""
@@ -159,14 +167,6 @@ def convert_white_to_transparent(image):
     image.putdata(new_data)
     return image
     
-def convert_logo_to_black_and_white(image):
-    """Convert a PIL image to a binary (black and white) image."""
-    grayscale_image = image.convert("L")  # Convert to grayscale
-    # Apply thresholding to create binary black and white
-    threshold = 128  # Change if needed for more contrast
-    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
-    return binary_image
-
 if uploaded_file is not None:
     processing_message = st.empty()
     processing_message.subheader("Processing...")
