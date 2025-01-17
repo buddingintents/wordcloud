@@ -6,6 +6,7 @@ import seaborn as sns
 from collections import deque
 from PIL import ImageDraw, ImageFont, Image
 import os
+import datetime  # Import for date and time     
 
 # File path to store global word cloud count
 COUNT_FILE = "wordcloud_count.txt"
@@ -92,10 +93,12 @@ def add_watermark(wordcloud_image, text):
 
 # Process uploaded PDF
 if uploaded_file is not None:
-    st.subheader("Processing...")
+    processing_message = st.empty()  # Placeholder for processing message
+    processing_message.subheader("Processing...")  # Display processing message
     pdf_text = extract_text_from_pdf(uploaded_file)
 
     if pdf_text:
+        processing_message.empty()  # Remove the processing message
         # Preprocess text (remove special characters and stopwords)
         words = pdf_text.split()
         stopwords = set(STOPWORDS)
@@ -118,17 +121,19 @@ if uploaded_file is not None:
         # Increment and save global wordcloud count
         global_wordcloud_count += 1
         save_wordcloud_count(global_wordcloud_count)
-        st.write(f"Total WordClouds Generated: {global_wordcloud_count}")
+        st.write(f"WordClouds Generated Globally: {global_wordcloud_count}")
 
         # Store wordcloud history
-        st.session_state.wordcloud_history.append((colormap, wordcloud_image))
+        creation_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        st.session_state.wordcloud_history.append((colormap, wordcloud_image, creation_time))
 
         # Display history pane
         st.subheader("WordCloud History")
         for cmap, wc_img in st.session_state.wordcloud_history:
-            st.write(f"Colormap: {cmap}")
+             st.write(f"Colormap: {cmap}, Created on: {timestamp}")
             st.image(wc_img)
     else:
+        processing_message.empty()  # Remove the processing message
         st.error("Unable to extract text from the uploaded PDF.")
 else:
     st.info("Please upload a PDF file to proceed.")
