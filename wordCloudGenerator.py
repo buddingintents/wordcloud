@@ -234,7 +234,7 @@ if uploaded_file is not None:
         wordcloud = WordCloud(
             width=800, height=400, max_words=max_words, colormap=colormap,
             background_color=background_color, stopwords=stopwords, mask=mask, contour_width = 2,
-            contour_color = 'black'
+            contour_color = background_color
         ).generate(processed_text)
 
         wordcloud_image = wordcloud.to_image()
