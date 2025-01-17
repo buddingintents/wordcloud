@@ -254,7 +254,7 @@ if uploaded_file is not None:
             for word in filtered_words:
                 position = (random.randint(0, 700), random.randint(0, 350))
                 size = random.randint(20, 50)
-                #font = ImageFont.truetype("arial.ttf", size)
+                font = get_default_font()
                 draw.text(position, word, font=font, fill='black')
             
             frames.append(frame)
