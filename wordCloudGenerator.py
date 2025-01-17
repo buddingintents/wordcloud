@@ -84,6 +84,29 @@ company_logos = {
 logo_selection = st.sidebar.selectbox("Customize with logo mask", list(company_logos.keys()))
 selected_logo_url = company_logos[logo_selection]
 
+st.sidebar.subheader("Logo Preview")
+
+if selected_logo_url:
+    try:
+        # Fetch the logo image
+        response = requests.get(selected_logo_url, stream=True, timeout=10)
+        response.raise_for_status()
+        original_logo = Image.open(BytesIO(response.content))
+        
+        # Display the original logo
+        st.sidebar.image(original_logo, caption="Original Logo", use_column_width=True)
+        
+        # Convert the logo to a binary mask
+        binary_logo = convert_logo_to_black_and_white(original_logo)
+        
+        # Display the binary mask version
+        st.sidebar.image(binary_logo, caption="Binary Mask", use_column_width=True)
+        
+    except Exception as e:
+        st.sidebar.error(f"Error displaying logo: {e}")
+else:
+    st.sidebar.info("No logo selected.")
+
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
 
