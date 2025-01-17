@@ -174,7 +174,7 @@ def get_mask_from_logo(logo_url):
                 raise ValueError("Mask image must be in RGBA mode")
                 
             binary_logo = convert_logo_to_black_and_white(logo_image)
-            mask_array = np.array(binary_logo)
+            mask_array = np.array(binary_logo.convert("RGB"))
             #mask_array = np.array(convert_white_to_transparent(logo_image))
             #mask_array = np.array(logo_image)
             # Check the shape of the mask
