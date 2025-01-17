@@ -110,12 +110,33 @@ def get_mask_from_logo(logo_url):
                 raise ValueError("Mask image must be a 2D array")
             # Create a binary mask where black pixels are 1 and white pixels are 0
             binary_mask = np.where(mask_array == 0, 1, 0)
-        return binary_mask
+        return convert_white_to_transparent(binary_mask)
     except requests.RequestException as e:
         st.warning(f"Failed to load the logo image due to a network error: {e}. Defaulting to no mask.")
     except UnidentifiedImageError as e:
         st.warning(f"Failed to process the logo image: {e}. Defaulting to no mask.")
     return None
+    
+def convert_white_to_transparent(image):
+    # Get the data of the image
+    data = image.getdata()
+    
+    # Create a new data list
+    new_data = []
+    
+    for item in data:
+        # Change all white (also shades of whites)
+        # pixels to transparent
+        if item[:3] == (255, 255, 255):
+            new_data.append((255, 255, 255, 0))
+        else:
+            new_data.append(item)
+    
+    # Update image data
+    image.putdata(new_data)
+    
+    # return the image
+    return image
 
 if uploaded_file is not None:
     processing_message = st.empty()
