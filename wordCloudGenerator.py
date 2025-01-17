@@ -148,6 +148,11 @@ if selected_logo_url:
         # Display the binary mask without alpha version
         st.sidebar.image(binary_logo_noalpha, caption="Binary Mask without alpha", use_container_width=True)
         
+        # Display the inverted binary mask without alpha version
+        # Invert the image
+        inverted_image = 255 - binary_logo_noalpha
+        st.sidebar.image(inverted_image, caption="Inverted Binary Mask without alpha", use_container_width=True)
+        
     except Exception as e:
         st.sidebar.error(f"Error displaying logo: {e}")
 else:
@@ -181,7 +186,8 @@ def get_mask_from_logo(logo_url):
                 
             binary_logo = convert_logo_to_black_and_white(logo_image)
             binary_alpha_removed = binary_logo.convert("L")
-            mask_array = np.array(binary_alpha_removed)
+            inverted_image = 255 - binary_alpha_removed
+            mask_array = np.array(inverted_image)
             #mask_array = np.array(convert_white_to_transparent(logo_image))
             #mask_array = np.array(logo_image)
             # Check the shape of the mask
