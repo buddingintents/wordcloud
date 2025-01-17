@@ -129,7 +129,7 @@ if uploaded_file is not None:
 
         # Display history pane
         st.subheader("WordCloud History")
-        for cmap, wc_img, timestamp in st.session_state.wordcloud_history:
+         for cmap, wc_img, timestamp in st.session_state.wordcloud_history:
             st.write(f"Colormap: {cmap}, Created on: {timestamp}")
             st.image(wc_img)
     else:
