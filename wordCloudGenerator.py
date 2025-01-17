@@ -149,7 +149,8 @@ if uploaded_file is not None:
         mask = get_mask_from_logo(selected_logo_url)
         wordcloud = WordCloud(
             width=800, height=400, max_words=max_words, colormap=colormap,
-            background_color=background_color, stopwords=stopwords, mask=mask
+            background_color=background_color, stopwords=stopwords, mask=mask, contour_width = 2,
+            contour_color = 'black'
         ).generate(processed_text)
 
         wordcloud_image = wordcloud.to_image()
