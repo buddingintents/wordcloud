@@ -10,6 +10,7 @@ import requests
 from io import BytesIO
 import os
 import datetime
+import cairosvg
 
 # File path to store global word cloud count
 COUNT_FILE = "wordcloud_count.txt"
@@ -98,7 +99,11 @@ def get_mask_from_logo(logo_url):
         if logo_url:
             response = requests.get(logo_url, stream=True)
             response.raise_for_status()  # Raise an error for failed requests
-            logo_image = Image.open(BytesIO(response.content)).convert("L")
+            if logo_url.endswith(".svg"):
+                png_data = cairosvg.svg2png(bytestring=response.content)
+                logo_image = Image.open(BytesIO(png_data)).convert("L")
+            else:
+                logo_image = Image.open(BytesIO(response.content)).convert("L")
             return np.array(logo_image)
     except (requests.RequestException, UnidentifiedImageError):
         st.warning("Failed to load or process the logo image. Defaulting to no mask.")
