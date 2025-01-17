@@ -10,7 +10,6 @@ import requests
 from io import BytesIO
 import os
 import datetime
-import cairosvg
 
 # File path to store global word cloud count
 COUNT_FILE = "wordcloud_count.txt"
@@ -72,12 +71,13 @@ background_color = st.sidebar.color_picker("Select background color", "#ffffff")
 secret_text = st.sidebar.text_input("Optional Secret Text", "")
 
 # Company logos for customization
+# Updated company logos with PNG URLs
 company_logos = {
     "Default": None,
-    "Google": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-    "Microsoft": "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg",
-    "Apple": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-    "Amazon": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo_black.svg"
+    "Google": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Logo_2013_Google.png/512px-Logo_2013_Google.png",
+    "Microsoft": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/512px-Microsoft_logo.svg.png",
+    "Apple": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/512px-Apple_logo_black.svg.png",
+    "Amazon": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo_black.svg/512px-Amazon_logo_black.svg.png"
 }
 
 logo_selection = st.sidebar.selectbox("Customize with logo mask", list(company_logos.keys()))
