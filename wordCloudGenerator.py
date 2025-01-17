@@ -11,6 +11,8 @@ from io import BytesIO
 import os
 import datetime
 import streamlit as st
+import imageio
+import random
 
 # File path to store global word cloud count
 COUNT_FILE = "wordcloud_count.txt"
