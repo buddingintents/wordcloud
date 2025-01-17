@@ -73,8 +73,8 @@ secret_text = st.sidebar.text_input("Optional Secret Text", "")
 # Company logos for customization
 company_logos = {
     "Default": None,
-    "Google": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png",
-    "Microsoft": "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+    "Google": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+    "Microsoft": "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg",
     "Apple": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
     "Amazon": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo_black.svg"
 }
@@ -94,10 +94,14 @@ def extract_text_from_pdf(file):
 
 def get_mask_from_logo(logo_url):
     """Generate a mask from a logo image URL."""
-    if logo_url:
-        response = requests.get(logo_url)
-        logo_image = Image.open(BytesIO(response.content)).convert("L")
-        return np.array(logo_image)
+    try:
+        if logo_url:
+            response = requests.get(logo_url, stream=True)
+            response.raise_for_status()  # Raise an error for failed requests
+            logo_image = Image.open(BytesIO(response.content)).convert("L")
+            return np.array(logo_image)
+    except (requests.RequestException, UnidentifiedImageError):
+        st.warning("Failed to load or process the logo image. Defaulting to no mask.")
     return None
 
 if uploaded_file is not None:
