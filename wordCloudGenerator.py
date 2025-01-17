@@ -90,8 +90,8 @@ def convert_logo_to_black_and_white(image):
     """Convert a PIL image to a binary (black and white) image."""
     grayscale_image = image.convert("L")  # Convert to grayscale
     # Apply thresholding to create binary black and white
-    threshold = 128  # Adjust the threshold as needed
-    binary_image = grayscale_image.point(lambda p: 255 if p < threshold else 0, '1')
+    threshold = 80  # Adjust the threshold as needed
+    binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
     return binary_image
     
 if selected_logo_url:
@@ -102,13 +102,13 @@ if selected_logo_url:
         original_logo = Image.open(BytesIO(response.content))
         
         # Display the original logo
-        st.sidebar.image(original_logo, caption="Original Logo", use_column_width=True)
+        st.sidebar.image(original_logo, caption="Original Logo", use_container_width=True)
         
         # Convert the logo to a binary mask
         binary_logo = convert_logo_to_black_and_white(original_logo)
         
         # Display the binary mask version
-        st.sidebar.image(binary_logo, caption="Binary Mask", use_column_width=True)
+        st.sidebar.image(binary_logo, caption="Binary Mask", use_container_width=True)
         
     except Exception as e:
         st.sidebar.error(f"Error displaying logo: {e}")
