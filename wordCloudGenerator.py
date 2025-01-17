@@ -130,7 +130,7 @@ if uploaded_file is not None:
         # Display history pane
         st.subheader("WordCloud History")
         for cmap, wc_img in st.session_state.wordcloud_history:
-             st.write(f"Colormap: {cmap}, Created on: {timestamp}")
+            st.write(f"Colormap: {cmap}, Created on: {timestamp}")
             st.image(wc_img)
     else:
         processing_message.empty()  # Remove the processing message
