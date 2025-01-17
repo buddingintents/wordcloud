@@ -10,8 +10,6 @@ import requests
 from io import BytesIO
 import os
 import datetime
-import streamlit as st
-#import imageio
 import random
 
 # File path to store global word cloud count
@@ -74,7 +72,6 @@ background_color = st.sidebar.color_picker("Select background color", "#ffffff")
 secret_text = st.sidebar.text_input("Optional Secret Text", "")
 
 # Company logos for customization
-# Updated company logos with PNG URLs
 company_logos = {
     "Default": None,
     "Google": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Logo_2013_Google.png/512px-Logo_2013_Google.png",
@@ -90,71 +87,35 @@ st.sidebar.subheader("Logo Preview")
 
 def convert_logo_to_black_and_white(image):
     """Convert a PIL image to a binary (black and white) image."""
-    # Separate the alpha channel
     r, g, b, alpha = image.split()
-    
-    # Convert the RGB image to grayscale
     grayscale_image = Image.merge("RGB", (r, g, b)).convert("L")
-    
-    # Combine the grayscale image with the alpha channel
     grayscale_with_alpha = Image.merge("LA", (grayscale_image, alpha))
-    
-    
-    #grayscale_image = image.convert("L")  # Convert to grayscale
-    # Apply thresholding to create binary black and white
-    threshold = 80  # Adjust the threshold as needed
+    threshold = 80
     binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
-    
-    # Combine the binary image with the alpha channel
     binary_with_alpha = Image.merge("LA", (binary_image, alpha))
-    
     return binary_with_alpha
-    
+
 def convert_logo_to_greyscale(image):
-    """Convert a PIL image to a binary (black and white) image."""
-    # Separate the alpha channel
+    """Convert a PIL image to a grayscale image."""
     r, g, b, alpha = image.split()
-    
-    # Convert the RGB image to grayscale
     grayscale_image = Image.merge("RGB", (r, g, b)).convert("L")
-    
-    # Combine the grayscale image with the alpha channel
     grayscale_with_alpha = Image.merge("LA", (grayscale_image, alpha))
     return grayscale_with_alpha
-    
+
 if selected_logo_url:
     try:
-        # Fetch the logo image
         response = requests.get(selected_logo_url, stream=True, timeout=10)
         response.raise_for_status()
         original_logo = Image.open(BytesIO(response.content))
-        
-        # Display the original logo
         st.sidebar.image(original_logo, caption="Original Logo", use_container_width=True)
-        
-        # Convert the logo to a binary mask
         greyscale_logo = convert_logo_to_greyscale(original_logo)
-        
-        # Display the greyscale mask version
         st.sidebar.image(greyscale_logo, caption="Greyscale Mask", use_container_width=True)
-        
-        # Convert the logo to a binary mask
         binary_logo = convert_logo_to_black_and_white(original_logo)
-        
-        # Display the binary mask version
         st.sidebar.image(binary_logo, caption="Binary Mask", use_container_width=True)
-        
-        # Convert the logo to a binary mask without alpha
-        binary_logo_noalpha = convert_logo_to_black_and_white(original_logo).convert("L")
-        
-        # Display the binary mask without alpha version
+        binary_logo_noalpha = binary_logo.convert("L")
         st.sidebar.image(binary_logo_noalpha, caption="Binary Mask without alpha", use_container_width=True)
-        
-        # Display the inverted binary mask without alpha version
-        # Invert the image
-        inverted_image = Image.eval(binary_logo_noalpha, lambda pixel: 255 - pixel)  #255 - binary_logo_noalpha
+        inverted_image = Image.eval(binary_logo_noalpha, lambda pixel: 255 - pixel)
         st.sidebar.image(inverted_image, caption="Inverted Binary Mask without alpha", use_container_width=True)
-        
     except Exception as e:
         st.sidebar.error(f"Error displaying logo: {e}")
 else:
@@ -162,7 +123,7 @@ else:
 
 # Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
-    
+
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     text = ""
@@ -171,34 +132,24 @@ def extract_text_from_pdf(file):
     return text
 
 def get_mask_from_logo(logo_url):
-    """Generate a mask from a logo image URL."""
-    binary_mask = None  # Initialize binary_mask to None
+    binary_mask = None
     headers = {
         'User-Agent': 'YourAppName/1.0 (your-email@example.com)'
     }
     try:
         if logo_url:
             response = requests.get(logo_url, headers=headers, stream=True, timeout=10)
-            response.raise_for_status()  # Raise an error for failed requests
-            logo_image = Image.open(BytesIO(response.content)).convert("RGBA")      
-
-            # Check if the image has the expected number of channels
+            response.raise_for_status()
+            logo_image = Image.open(BytesIO(response.content)).convert("RGBA")
             if logo_image.mode != "RGBA":
                 raise ValueError("Mask image must be in RGBA mode")
-                
             binary_logo = convert_logo_to_black_and_white(logo_image)
             binary_alpha_removed = binary_logo.convert("L")
             inverted_image = Image.eval(binary_alpha_removed, lambda pixel: 255 - pixel)
             mask_array = np.array(inverted_image)
-            #mask_array = np.array(convert_white_to_transparent(logo_image))
-            #mask_array = np.array(logo_image)
-            # Check the shape of the mask
             if len(mask_array.shape) != 2:
-                raise ValueError("Image dimensions: " + str(len(mask_array.shape)) + ". Mask image must be a 2D array")
-            # Create a binary mask where black pixels are 1 and white pixels are 0
-            #binary_mask = np.where(mask_array == 0, 1, 0)
-        #return binary_mask
-        return mask_array
+                raise ValueError(f"Image dimensions: {len(mask_array.shape)}. Mask image must be a 2D array")
+            return mask_array
     except requests.RequestException as e:
         st.warning(f"Failed to load the logo image due to a network error: {e}. Defaulting to no mask.")
     except UnidentifiedImageError as e:
@@ -208,18 +159,7 @@ def get_mask_from_logo(logo_url):
     except Exception as e:
         st.warning(f"An unexpected error occurred: {e}. Defaulting to no mask.")
     return None
-    
-def convert_white_to_transparent(image):
-    data = image.getdata()
-    new_data = []
-    for item in data:
-        if item[:3] == (255, 255, 255):
-            new_data.append((0, 0, 0, 0))  # Black and fully transparent
-        else:
-            new_data.append((0, 0, 0, 255))  # Black and opaque
-    image.putdata(new_data)
-    return image
-    
+
 if uploaded_file is not None:
     processing_message = st.empty()
     processing_message.subheader("Processing...")
@@ -235,45 +175,31 @@ if uploaded_file is not None:
         mask = get_mask_from_logo(selected_logo_url)
         wordcloud = WordCloud(
             width=800, height=400, max_words=max_words, colormap=colormap,
-            background_color=background_color, stopwords=stopwords, mask=mask, contour_width = 2,
-            contour_color = background_color
+            background_color=background_color, stopwords=stopwords, mask=mask, contour_width=2,
+            contour_color=background_color
         ).generate(processed_text)
 
         wordcloud_image = wordcloud.to_image()
-        
-        ##GIF CODE START
 
-        # Create a list to store frames
         frames = []
-        
-        # Generate frames with animated text
         for i in range(50):
             frame = Image.new('RGB', (800, 400), 'white')
             draw = ImageDraw.Draw(frame)
-            
             for word in filtered_words:
                 position = (random.randint(0, 700), random.randint(0, 350))
                 size = random.randint(20, 50)
                 font = get_default_font()
                 draw.text(position, word, font=font, fill='black')
-            
             frames.append(frame)
 
-        # Save the frames as a GIF
-        img_gif = frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=100, loop=0)
+        frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=100, loop=0)
 
-        # Display the GIF
-        from IPython.display import Image as IPImage
-        IPImage(filename='animated_wordcloud.gif')
-
-        ##GIF CODE END       
+        st.image('animated_wordcloud.gif', caption='Animated WordCloud')
 
         if secret_text != "Ankit@Sharma":
             wordcloud_image = add_watermark(wordcloud_image, "Generated @ Ankit's WordCloud")
 
         st.image(wordcloud_image)
-        
-        st.image(img_gif)
 
         global_wordcloud_count += 1
         save_wordcloud_count(global_wordcloud_count)
