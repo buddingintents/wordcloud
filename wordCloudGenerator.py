@@ -102,7 +102,11 @@ def convert_logo_to_black_and_white(image):
     # Apply thresholding to create binary black and white
     threshold = 80  # Adjust the threshold as needed
     binary_image = grayscale_image.point(lambda p: 255 if p > threshold else 0, '1')
-    return binary_image
+    
+    # Combine the binary image with the alpha channel
+    binary_with_alpha = Image.merge("LA", (binary_image, alpha))
+    
+    return binary_with_alpha
     
 def convert_logo_to_greyscale(image):
     """Convert a PIL image to a binary (black and white) image."""
