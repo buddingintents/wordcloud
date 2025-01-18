@@ -185,6 +185,7 @@ if uploaded_file is not None:
         ).generate(processed_text)
 
         wordcloud_image = wordcloud.to_image()
+        word_positions = wordcloud.layout_  # Extract word positions and formatting
 
         frames = []
         frame_count = 10  # Reduced number of frames for efficiency
