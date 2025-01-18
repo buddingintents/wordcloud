@@ -196,7 +196,7 @@ if uploaded_file is not None:
             for (word, size, pos, orientation, color) in word_positions:
                 x, y = move_text_randomly(pos)
                 font = get_default_font(size)
-                draw.text((x, y), word, font=font, fill=color)
+                draw.text((x, y), str(word), font=font, fill=color)
             frames.append(frame)
 
 
