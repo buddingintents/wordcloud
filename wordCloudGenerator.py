@@ -30,10 +30,9 @@ def save_wordcloud_count(count):
     with open(COUNT_FILE, "w") as file:
         file.write(str(count))
 
-def get_default_font():
-    """Fetch a default truetype font that works across platforms."""
+def get_default_font(size=20):
     try:
-        return ImageFont.truetype("arial.ttf", 20)
+        return ImageFont.truetype("arial.ttf", size)
     except IOError:
         return ImageFont.load_default()
 
