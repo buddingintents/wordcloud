@@ -198,12 +198,13 @@ if uploaded_file is not None:
             for (word, size, pos, orientation, color) in word_positions:
                 x, y = move_text_randomly(pos)
                 font = get_default_font(size)
+                font.size = size
                 #draw.text((x, y), str(word), font=font, fill=color)
                 draw.text((x, y), str(word[0]), font=font, fill=color)
             frames.append(frame)
 
 
-        frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=100, loop=0)
+        frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=350, loop=0)
 
         st.image('animated_wordcloud.gif', caption='Animated WordCloud')
 
