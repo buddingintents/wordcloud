@@ -197,7 +197,7 @@ if uploaded_file is not None:
                 x, y = move_text_randomly(pos)
                 font = get_default_font(size)
                 #draw.text((x, y), str(word), font=font, fill=color)
-                draw.text((x, y), str(word.Split()[0]), font=font, fill=color)
+                draw.text((x, y), str(word[0]), font=font, fill=color)
             frames.append(frame)
 
 
