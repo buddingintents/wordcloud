@@ -32,7 +32,8 @@ def save_wordcloud_count(count):
 
 def get_default_font(size=20):
     try:
-        return PIL.ImageFont.FreetypeFont ImageFont.truetype("monospace.ttf", size)
+        #PIL.ImageFont.FreetypeFont 
+        return ImageFont.truetype("monospace.ttf", size)
     except IOError:
         st.info(ImageFont.load_default())
         return ImageFont.load_default()
