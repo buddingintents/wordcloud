@@ -188,14 +188,16 @@ if uploaded_file is not None:
 
         frames = []
         frame_count = 10  # Reduced number of frames for efficiency
+        cloud_size = (wordcloud.width, wordcloud.height)  # Correct size extraction
+        
         for _ in range(frame_count):
-            frame = Image.new('RGB', wordcloud.size, 'white')
+            frame = Image.new('RGB', cloud_size, 'white')
             draw = ImageDraw.Draw(frame)
             for (word, size, pos, orientation, color) in word_positions:
                 x, y = move_text_randomly(pos)
                 font = get_default_font(size)
                 draw.text((x, y), word, font=font, fill=color)
-        frames.append(frame)
+            frames.append(frame)
 
 
         frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=100, loop=0)
