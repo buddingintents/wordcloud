@@ -34,6 +34,7 @@ def get_default_font(size=20):
     try:
         return ImageFont.truetype("arial.ttf", size)
     except IOError:
+        st.info(ImageFont.load_default())
         return ImageFont.load_default()
 
 def add_watermark(wordcloud_image, text):
@@ -187,7 +188,7 @@ if uploaded_file is not None:
         word_positions = wordcloud.layout_  # Extract word positions and formatting
 
         frames = []
-        frame_count = 10  # Reduced number of frames for efficiency
+        frame_count = 15  # Reduced number of frames for efficiency
         cloud_size = (wordcloud.width, wordcloud.height)  # Correct size extraction
         
         for _ in range(frame_count):
