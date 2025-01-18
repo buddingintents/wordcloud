@@ -160,6 +160,11 @@ def get_mask_from_logo(logo_url):
         st.warning(f"An unexpected error occurred: {e}. Defaulting to no mask.")
     return None
 
+def move_text_randomly(position, distance=5):
+    dx = random.randint(-distance, distance)
+    dy = random.randint(-distance, distance)
+    return position[0] + dx, position[1] + dy
+
 if uploaded_file is not None:
     processing_message = st.empty()
     processing_message.subheader("Processing...")
@@ -182,15 +187,16 @@ if uploaded_file is not None:
         wordcloud_image = wordcloud.to_image()
 
         frames = []
-        for i in range(50):
-            frame = Image.new('RGB', (800, 400), 'white')
+        frame_count = 10  # Reduced number of frames for efficiency
+         for _ in range(frame_count):
+            frame = Image.new('RGB', wordcloud.size, 'white')
             draw = ImageDraw.Draw(frame)
-            for word in filtered_words:
-                position = (random.randint(0, 700), random.randint(0, 350))
-                size = random.randint(20, 50)
-                font = get_default_font()
-                draw.text(position, word, font=font, fill='black')
+            for (word, size, pos, orientation, color) in word_positions:
+                x, y = move_text_randomly(pos)
+                font = get_default_font(size)
+                draw.text((x, y), word, font=font, fill=color)
             frames.append(frame)
+
 
         frames[0].save('animated_wordcloud.gif', save_all=True, append_images=frames[1:], duration=100, loop=0)
 
