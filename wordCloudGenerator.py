@@ -261,8 +261,6 @@ if uploaded_file:
             # Rest of display code...
         else:
             st.error("Failed to generate word cloud. Please check input and settings.")
-    else:
-        st.error("No extractable text found in the document.")
         
         if wordcloud:
             # Display results
