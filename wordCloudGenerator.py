@@ -124,12 +124,16 @@ def preprocess_text(text):
     """Enhanced text cleaning with multiple options"""
     text = re.sub(r'\d+', '', text)  # Remove numbers
     text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
+    # Comprehensive pattern including all punctuation and special chars
+    text = re.sub(r'[^\w\s-]|(?<!\w)-(?!\w)', ' ', text)
+    # Clean residual whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
     
     # Process custom stopwords
-    """if user_stopwords:
-        custom_stops = {word.strip().lower() for word in user_stopwords.split(',')}
-        st.session_state.custom_stopwords.update(custom_stops)
-    """
+    #if user_stopwords:
+        #custom_stops = {word.strip().lower() for word in user_stopwords.split(',')}
+        #st.session_state.custom_stopwords.update(custom_stops)
+    
     return text.lower()
 
 def generate_mask(uploaded_image):
