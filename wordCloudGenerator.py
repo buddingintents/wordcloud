@@ -152,6 +152,7 @@ def generate_wordcloud(text):
     """Main wordcloud generation with progress tracking"""
     progress_bar = st.progress(0)
     wc = None  # Initialize wc variable
+    gif_buffer = None  # Initialize gif_buffer variable
     
     try:
         # Validate input before processing
@@ -199,18 +200,6 @@ def generate_wordcloud(text):
             wc.generate(validation_text)  # Now wc is defined
             progress_bar.progress(80)
 
-    except ValueError as ve:
-        st.error(f"Validation Error: {str(ve)}")
-        return None, None
-    except TypeError as te:
-        st.error(f"Type Error: {str(te)}")
-        st.error(f"Problematic text type: {type(cleaned_text)}")
-        return None, None
-    except Exception as e:
-        st.error(f"Unexpected Error: {str(e)}")
-        st.error("Please check terminal for full error details")
-        raise e  # Re-raise to see full stack trace
-        
         # Generate animation if enabled
         if animate_wc:
             with st.spinner("Rendering animation..."):
@@ -234,10 +223,19 @@ def generate_wordcloud(text):
                     loop=0
                 )
                 progress_bar.progress(100)
-        
+
         return wc, gif_buffer if animate_wc else None
+
+    except ValueError as ve:
+        st.error(f"Validation Error: {str(ve)}")
+        return None, None
+    except TypeError as te:
+        st.error(f"Type Error: {str(te)}")
+        st.error(f"Problematic text type: {type(cleaned_text)}")
+        return None, None
     except Exception as e:
-        st.error(f"Generation failed: {str(e)}")
+        st.error(f"Unexpected Error: {str(e)}")
+        st.error("Please check terminal for full error details")
         return None, None  # Always return a tuple
 
 # ======================
