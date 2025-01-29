@@ -247,6 +247,9 @@ def generate_wordcloud(text):
 uploaded_file = st.file_uploader("Upload PDF Document", type="pdf")
 
 if uploaded_file:
+    # Initialize variables with default values
+    wordcloud = None
+    animation = None
     # Extract text from PDF
     with st.spinner("Extracting text..."):
         pdf_reader = PdfReader(uploaded_file)
