@@ -152,6 +152,7 @@ def generate_mask(uploaded_image):
 def generate_wordcloud(text):
     """Main wordcloud generation with progress tracking"""
     progress_bar = st.progress(0)
+    wc = None  # Initialize wc variable
     
     try:
         # Validate input before processing
@@ -164,30 +165,39 @@ def generate_wordcloud(text):
             cleaned_text = preprocess_text(text)
             progress_bar.progress(20)
 
-            # Debug logging (visible in terminal)
-            st.toast(f"Text length after preprocessing: {len(cleaned_text)}")
-            st.toast(f"First 50 chars: {cleaned_text[:50]}")
-
             if not cleaned_text.strip():
                 st.error("No valid text remaining after preprocessing. Check your filters and stopwords.")
                 return None, None
 
-        # Rest of the function remains the same until generation
-        # ...
-        
-        with st.spinner("Generating visualization..."):
-            # Add explicit type conversion and validation
-            if not isinstance(cleaned_text, str):
-                st.error(f"Unexpected text type after preprocessing: {type(cleaned_text)}")
-                return None, None
+        # Generate mask
+        mask = None
+        if mask_image:
+            with st.spinner("Processing mask..."):
+                mask = generate_mask(mask_image)
+                progress_bar.progress(40)
 
+        # Create wordcloud instance BEFORE generation
+        wc = WordCloud(
+            width=1200,
+            height=600,
+            max_words=max_words,
+            colormap=colormap,
+            background_color=background_color,
+            stopwords=STOPWORDS.union(st.session_state.custom_stopwords),
+            mask=mask,
+            contour_width=2,
+            contour_color=background_color,
+            font_path=custom_font.name if custom_font else None
+        )
+
+        with st.spinner("Generating visualization..."):
             # Final validation before generation
             validation_text = cleaned_text.strip()
             if len(validation_text) < 10:
                 st.error(f"Insufficient text for generation ({len(validation_text)} characters)")
                 return None, None
 
-            wc.generate(validation_text)
+            wc.generate(validation_text)  # Now wc is defined
             progress_bar.progress(80)
 
     except ValueError as ve:
