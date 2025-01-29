@@ -20,6 +20,13 @@ LOCK_FILE = f"{COUNT_FILE}.lock"
 CACHE_TIMEOUT = 3600  # 1 hour
 HISTORY_LENGTH = 10
 
+# Read the secret key named "ANKIT_SECRET" from Streamlit secrets
+if 'SECRETWORD' in st.secrets:
+    ANKIT_SECRET = st.secrets['SECRETWORD']
+    # Display the secret key as an alert on page load
+    st.warning(f"Secret Key Loaded: {ANKIT_SECRET}")
+else:
+    st.error("Secret Key 'ANKIT_SECRET' not found in secrets!")
 # Security Configuration
 SECRET_HASH = hashlib.sha256(b'default_secret').hexdigest()  # Set via secrets in production
 
