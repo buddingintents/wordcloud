@@ -24,7 +24,7 @@ HISTORY_LENGTH = 10
 if 'SECRETWORD' in st.secrets:
     ANKIT_SECRET = st.secrets['SECRETWORD']
     # Security Configuration
-    SECRET_HASH = hashlib.sha256(ANKIT_SECRET).hexdigest()  # Set via secrets in production
+    SECRET_HASH = hashlib.sha256(ANKIT_SECRET.encode()).hexdigest()  # Set via secrets in production
 else:
     st.error("Secret Key not found!")
 
