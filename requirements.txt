@@ -8,3 +8,5 @@ PyPDF2
 matplotlib 
 seaborn
 cairosvg
+pillow
+filelock
