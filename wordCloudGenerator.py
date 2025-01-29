@@ -122,13 +122,8 @@ with st.sidebar:
 # ======================
 def preprocess_text(text):
     """Enhanced text cleaning with multiple options"""
-    # Remove numbers
-    if remove_numbers:
-        text = re.sub(r'\d+', '', text)
-    
-    # Remove punctuation
-    if remove_punctuation:
-        text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'\d+', '', text)  # Remove numbers
+    text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
     
     # Process custom stopwords
     if user_stopwords:
@@ -173,7 +168,7 @@ def generate_wordcloud(text):
         mask = None
         if mask_image:
             with st.spinner("Processing mask..."):
-                mask = generate_mask(mask_image)
+                mask = generate_mask(mask_image) if mask_image else None
                 progress_bar.progress(40)
 
         # Create wordcloud instance BEFORE generation
