@@ -54,7 +54,10 @@ def get_default_font(size=20):
         try:
             return ImageFont.truetype("LiberationSans-Regular.ttf", size)
         except IOError:
-            return ImageFont.load_default(size)
+            try:
+                return ImageFont.truetype("DejaVuSans.ttf", size)  # Common fallback font
+            except IOError:
+                return ImageFont.load_default(size)  # Ultimate fallback
 
 def add_watermark(image, text):
     """Add dynamic watermark with responsive positioning"""
@@ -153,7 +156,7 @@ def generate_wordcloud(text):
     progress_bar = st.progress(0)
     wc = None  # Initialize wc variable
     gif_buffer = None  # Initialize gif_buffer variable
-    
+
     try:
         # Validate input before processing
         if not isinstance(text, str):
@@ -176,7 +179,19 @@ def generate_wordcloud(text):
                 mask = generate_mask(mask_image) if mask_image else None
                 progress_bar.progress(40)
 
-        # Create wordcloud instance BEFORE generation
+        # Validate custom font
+        font_path = None
+        if custom_font:
+            try:
+                # Save the uploaded font temporarily
+                with open("temp_font.ttf", "wb") as f:
+                    f.write(custom_font.getbuffer())
+                font_path = "temp_font.ttf"
+            except Exception as e:
+                st.error(f"Failed to load custom font: {str(e)}")
+                font_path = None
+
+        # Create wordcloud instance
         wc = WordCloud(
             width=1200,
             height=600,
@@ -187,7 +202,7 @@ def generate_wordcloud(text):
             mask=mask,
             contour_width=2,
             contour_color=background_color,
-            font_path=custom_font.name if custom_font else None
+            font_path=font_path  # Use validated font path
         )
 
         with st.spinner("Generating visualization..."):
@@ -197,7 +212,7 @@ def generate_wordcloud(text):
                 st.error(f"Insufficient text for generation ({len(validation_text)} characters)")
                 return None, None
 
-            wc.generate(validation_text)  # Now wc is defined
+            wc.generate(validation_text)  # Generate word cloud
             progress_bar.progress(80)
 
         # Generate animation if enabled
@@ -212,7 +227,7 @@ def generate_wordcloud(text):
                         font = get_default_font(size)
                         draw.text((x, y), str(word), font=font, fill=color)
                     frames.append(temp_img)
-                
+
                 gif_buffer = BytesIO()
                 frames[0].save(
                     gif_buffer,
