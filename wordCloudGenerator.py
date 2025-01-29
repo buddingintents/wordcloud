@@ -101,7 +101,8 @@ if 'custom_stopwords' not in st.session_state:
 
 # UI Configuration
 st.set_page_config(page_title="WordCloud Pro", layout="wide")
-st.title("📚 WordCloud Pro: Advanced Text Visualization")
+st.title("📚 Ankit's WordCloud: Advanced Text Visualization")
+st.header("App that takes PDF file as input, extracts text, preprocesses it, removes stop words, and builds a word cloud and now can generate an animated version of it too")
 st.markdown("---")
 
 # ======================
