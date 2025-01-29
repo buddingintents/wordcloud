@@ -153,48 +153,54 @@ def generate_wordcloud(text):
     """Main wordcloud generation with progress tracking"""
     progress_bar = st.progress(0)
     
-    # Preprocess text
-    with st.spinner("Cleaning text..."):
-        cleaned_text = preprocess_text(text)
-        progress_bar.progress(20)
-        
-        # Add validation check here
-        if not cleaned_text.strip():
-            st.error("No valid text remaining after preprocessing. Check your filters and stopwords.")
+    try:
+        # Validate input before processing
+        if not isinstance(text, str):
+            st.error(f"Invalid text type received: {type(text)}. Expected string.")
             return None, None
 
-    # Generate mask
-    mask = None
-    if mask_image:
-        with st.spinner("Processing mask..."):
-            mask = generate_mask(mask_image)
-            progress_bar.progress(40)
-    
-    # Create wordcloud
-    try:
-        wc = WordCloud(
-            width=1200,
-            height=600,
-            max_words=max_words,
-            colormap=colormap,
-            background_color=background_color,
-            stopwords=STOPWORDS.union(st.session_state.custom_stopwords),
-            mask=mask,
-            contour_width=2,
-            contour_color=background_color,
-            font_path=custom_font.name if custom_font else None
-        )
+        # Preprocess text with enhanced validation
+        with st.spinner("Cleaning text..."):
+            cleaned_text = preprocess_text(text)
+            progress_bar.progress(20)
+
+            # Debug logging (visible in terminal)
+            st.toast(f"Text length after preprocessing: {len(cleaned_text)}")
+            st.toast(f"First 50 chars: {cleaned_text[:50]}")
+
+            if not cleaned_text.strip():
+                st.error("No valid text remaining after preprocessing. Check your filters and stopwords.")
+                return None, None
+
+        # Rest of the function remains the same until generation
+        # ...
         
         with st.spinner("Generating visualization..."):
-            # Add explicit string conversion and validation
+            # Add explicit type conversion and validation
             if not isinstance(cleaned_text, str):
-                cleaned_text = str(cleaned_text)
-                
-            if len(cleaned_text) < 10:  # Minimum text length check
-                raise ValueError("Insufficient text for word cloud generation")
-                
-            wc.generate(cleaned_text)
+                st.error(f"Unexpected text type after preprocessing: {type(cleaned_text)}")
+                return None, None
+
+            # Final validation before generation
+            validation_text = cleaned_text.strip()
+            if len(validation_text) < 10:
+                st.error(f"Insufficient text for generation ({len(validation_text)} characters)")
+                return None, None
+
+            wc.generate(validation_text)
             progress_bar.progress(80)
+
+    except ValueError as ve:
+        st.error(f"Validation Error: {str(ve)}")
+        return None, None
+    except TypeError as te:
+        st.error(f"Type Error: {str(te)}")
+        st.error(f"Problematic text type: {type(cleaned_text)}")
+        return None, None
+    except Exception as e:
+        st.error(f"Unexpected Error: {str(e)}")
+        st.error("Please check terminal for full error details")
+        raise e  # Re-raise to see full stack trace
         
         # Generate animation if enabled
         if animate_wc:
