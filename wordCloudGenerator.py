@@ -258,6 +258,7 @@ if uploaded_file:
             wordcloud, animation = result
             # Rest of display code...
         else:
+            st.error(text)
             st.error("Failed to generate word cloud. Please check input and settings.")
         
         if wordcloud:
