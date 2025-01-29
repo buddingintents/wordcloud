@@ -287,7 +287,7 @@ if uploaded_file:
                 wc_image = wordcloud.to_image()
                 if not hashlib.sha256(secret_access.encode()).hexdigest() == SECRET_HASH:
                     wc_image = add_watermark(wc_image, "Generated with WordCloud Pro")
-                st.image(wc_image, use_column_width=True)
+                st.image(wc_image, use_container_width=True)
                 
                 # Download buttons
                 img_buffer = BytesIO()
@@ -302,7 +302,7 @@ if uploaded_file:
             with col2:
                 if animation:
                     st.subheader("Animation Preview")
-                    st.image(animation.getvalue(), use_column_width=True)
+                    st.image(animation.getvalue(), use_container_width=True)
                     st.download_button(
                         label="Download Animation",
                         data=animation.getvalue(),
