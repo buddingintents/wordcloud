@@ -294,8 +294,6 @@ if uploaded_file:
                 wc_image = wordcloud.to_image()
                 if not hashlib.sha256(secret_access.encode()).hexdigest() == SECRET_HASH:
                     wc_image = add_watermark(wc_image, "Generated @ Ankit's WordCloud")
-                else:
-                    st.eeror(default_secret)
                 st.image(wc_image, use_container_width=True)
                 
                 # Download buttons
