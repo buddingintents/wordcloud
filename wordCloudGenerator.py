@@ -126,10 +126,10 @@ def preprocess_text(text):
     text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
     
     # Process custom stopwords
-    if user_stopwords:
+    """if user_stopwords:
         custom_stops = {word.strip().lower() for word in user_stopwords.split(',')}
         st.session_state.custom_stopwords.update(custom_stops)
-    
+    """
     return text.lower()
 
 def generate_mask(uploaded_image):
