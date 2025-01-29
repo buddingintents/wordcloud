@@ -140,9 +140,9 @@ def preprocess_text(text):
     text = re.sub(r'\s+', ' ', text).strip()
     
     # Process custom stopwords
-    #if user_stopwords:
-        #custom_stops = {word.strip().lower() for word in user_stopwords.split(',')}
-        #st.session_state.custom_stopwords.update(custom_stops)
+    if user_stopwords:
+        custom_stops = {word.strip().lower() for word in user_stopwords.split(',')}
+        st.session_state.custom_stopwords.update(custom_stops)
     
     return text.lower()
 
