@@ -157,7 +157,12 @@ def generate_wordcloud(text):
     with st.spinner("Cleaning text..."):
         cleaned_text = preprocess_text(text)
         progress_bar.progress(20)
-    
+        
+        # Add validation check here
+        if not cleaned_text.strip():
+            st.error("No valid text remaining after preprocessing. Check your filters and stopwords.")
+            return None, None
+
     # Generate mask
     mask = None
     if mask_image:
@@ -181,6 +186,13 @@ def generate_wordcloud(text):
         )
         
         with st.spinner("Generating visualization..."):
+            # Add explicit string conversion and validation
+            if not isinstance(cleaned_text, str):
+                cleaned_text = str(cleaned_text)
+                
+            if len(cleaned_text) < 10:  # Minimum text length check
+                raise ValueError("Insufficient text for word cloud generation")
+                
             wc.generate(cleaned_text)
             progress_bar.progress(80)
         
