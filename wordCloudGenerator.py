@@ -44,6 +44,8 @@ def save_wordcloud_count(count):
                 f.write(str(count))
     except Timeout:
         st.error("Couldn't update count due to concurrent access.")
+    except Exception as e:
+        st.error(f"Error saving count: {str(e)}")
 
 @st.cache_data(ttl=CACHE_TIMEOUT)
 def get_default_font(size=20):
@@ -309,11 +311,13 @@ if uploaded_file:
                         file_name="wordcloud.gif",
                         mime="image/gif"
                     )
-            
             # Update global count and history
-            global_count = load_wordcloud_count() + 1
-            save_wordcloud_count(global_count)
-            
+            try:
+                global_count = load_wordcloud_count() + 1
+                save_wordcloud_count(global_count)
+            except Exception as e:
+                st.error(f"Failed to update global count: {str(e)}")
+        
             st.session_state.wordcloud_history.append({
                 "timestamp": datetime.datetime.now().isoformat(),
                 "image": wc_image,
@@ -323,6 +327,7 @@ if uploaded_file:
                     "mask_used": bool(mask_image)
                 }
             })
+
             
             # Display history
             with st.expander("Generation History"):
