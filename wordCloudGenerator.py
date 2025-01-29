@@ -206,7 +206,7 @@ def generate_wordcloud(text):
                     for (word, size, pos, _, color) in wc.layout_:
                         x, y = pos[0] + random.randint(-5,5), pos[1] + random.randint(-5,5)
                         font = get_default_font(size)
-                        draw.text((x, y), word, font=font, fill=color)
+                        draw.text((x, y), str(word), font=font, fill=color)
                     frames.append(temp_img)
                 
                 gif_buffer = BytesIO()
