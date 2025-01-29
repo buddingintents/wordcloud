@@ -239,7 +239,7 @@ def generate_wordcloud(text):
         return wc, gif_buffer if animate_wc else None
     except Exception as e:
         st.error(f"Generation failed: {str(e)}")
-        return None, None
+        return None, None  # Always return a tuple
 
 # ======================
 # Main Application Flow
@@ -253,8 +253,16 @@ if uploaded_file:
         text = "\n".join([page.extract_text() or "" for page in pdf_reader.pages])
     
     if text:
-        # Generate visualization
-        wordcloud, animation = generate_wordcloud(text)
+         # Generate visualization with null check
+        result = generate_wordcloud(text)
+        
+        if result is not None:
+            wordcloud, animation = result
+            # Rest of display code...
+        else:
+            st.error("Failed to generate word cloud. Please check input and settings.")
+    else:
+        st.error("No extractable text found in the document.")
         
         if wordcloud:
             # Display results
