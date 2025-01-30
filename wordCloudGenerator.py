@@ -227,8 +227,8 @@ def generate_wordcloud(text):
         if animate_wc:
             with st.spinner("Rendering animation..."):
                 frames = []
-                for _ in range(10):  # Reduced frame count for performance
-                    temp_img = wc.to_image()
+                for _ in range(15):  # Reduced frame count for performance
+                    temp_img = Image.new("RGB", wc.to_image().size, (255, 255, 255))                    
                     draw = ImageDraw.Draw(temp_img)
                     for (word, size, pos, _, color) in wc.layout_:
                         x, y = pos[0] + random.randint(-5,5), pos[1] + random.randint(-5,5)
