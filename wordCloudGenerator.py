@@ -19,6 +19,8 @@ from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from streamlit.components.v1 import html
 
+st.set_page_config(page_title="WordCloud Pro", layout="wide")
+
 # Configuration
 COUNT_FILE = "wordcloud_count.txt"
 LOCK_FILE = f"{COUNT_FILE}.lock"
@@ -152,7 +154,6 @@ if 'custom_stopwords' not in st.session_state:
     st.session_state.custom_stopwords = set()
 
 # UI Configuration
-st.set_page_config(page_title="WordCloud Pro", layout="wide")
 st.title("📚 Ankit's WordCloud: Advanced Text Visualization")
 st.subheader("App that takes PDF file as input, extracts text, preprocesses it, removes stop words, and builds a word cloud and now can generate an animated version of it too")
 st.markdown("---")
