@@ -26,13 +26,25 @@ CACHE_TIMEOUT = 3600  # 1 hour
 HISTORY_LENGTH = 10
 
 # Initialize Firebase
-if not firebase_admin._apps:
-    try:
+# Modified Firebase initialization section
+try:
+    # Initialize Firebase only once
+    if not firebase_admin._apps:
         firebase_cred = credentials.Certificate(st.secrets["firebase"]["credential"])
-        firebase_admin.initialize_app(firebase_cred)
-    except Exception as e:
-        st.error(f"Firebase initialization failed: {str(e)}")
-db = firestore.client()
+        firebase_app = firebase_admin.initialize_app(firebase_cred)
+        db = firestore.client()
+        st.success("Firebase initialized successfully!")
+    else:
+        db = firestore.client()
+except ValueError as ve:
+    st.error(f"Firebase initialization error: {str(ve)}")
+    db = None
+except KeyError as ke:
+    st.error(f"Missing Firebase credentials in secrets: {str(ke)}")
+    db = None
+except Exception as e:
+    st.error(f"Firebase connection failed: {str(e)}")
+    db = None
 
 # Read the secret key named "ANKIT_SECRET" from Streamlit secrets
 if 'SECRETWORD' in st.secrets:
